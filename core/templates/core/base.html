@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Projects Dashboard{% endblock %}</title>
+
+    <!-- Bootstrap 5 RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css"
+        integrity="sha384-dpuaG1suU0eT09tx5plTaGMLBsfDLzUCCUXOY2j/LSvXYuG6Bqs43ALlhIqAJVRb" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8f9fa;
+            /* bg-gray-50 equivalent */
+        }
+
+        .nav-link {
+            color: #495057;
+        }
+
+        .nav-link:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Custom Colors matching Database/Tailwind classes */
+        .bg-blue-600 {
+            background-color: #2563eb !important;
+        }
+
+        .bg-green-500 {
+            background-color: #22c55e !important;
+        }
+
+        .bg-yellow-500 {
+            background-color: #eab308 !important;
+        }
+
+        .bg-red-600 {
+            background-color: #dc2626 !important;
+        }
+
+        .bg-gray-600 {
+            background-color: #4b5563 !important;
+        }
+
+        .text-blue-600 {
+            color: #2563eb !important;
+        }
+
+        .text-red-600 {
+            color: #dc2626 !important;
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100 text-body">
+
+    <!-- Top Header -->
+    <header class="bg-white shadow-sm py-3 px-4 d-flex justify-content-between align-items-center sticky-top z-3">
+        <!-- Right: Logo & Title -->
+        <div class="d-flex align-items-center gap-3">
+            <img src="{% static 'core/logo.png' %}" alt="Smart Projects Logo" style="height: 60px;">
+        </div>
+
+        <!-- Center: Search -->
+        <div class="flex-grow-1 mx-4" style="max-width: 500px;">
+            <div class="position-relative">
+                <input type="text" placeholder="البحث"
+                    class="form-control rounded-pill px-4 py-2 bg-light border-0 focus-ring focus-ring-light">
+                <div class="position-absolute top-50 end-0 translate-middle-y pe-3 pointer-events-none text-muted">
+                    <i class="bi bi-search"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Left: Icons -->
+        <div class="d-flex align-items-center gap-3 text-secondary">
+            <button class="btn btn-light rounded-circle p-2 border-0">
+                <i class="bi bi-bell fs-5"></i>
+            </button>
+            <button class="btn btn-light rounded-circle p-2 border-0">
+                <i class="bi bi-gear fs-5"></i>
+            </button>
+            <button class="btn btn-light rounded-circle p-2 border-0">
+                <i class="bi bi-person fs-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <div class="container-fluid px-4 py-4 flex-grow-1">
+        <div class="row g-4">
+
+            <!-- Right Sidebar: Navigation (2 cols) -->
+            <aside class="col-lg-2 order-lg-1">
+                <h2 class="fw-bold fs-5 mb-3 text-end">القائمة الرئيسية:</h2>
+                <nav class="list-group list-group-flush bg-transparent gap-2">
+                    {% for item in nav_items %}
+                    <a href="{{ item.url }}"
+                        class="list-group-item list-group-item-action bg-light border-0 rounded d-flex justify-content-between align-items-center p-3">
+                        <span class="fw-medium">{{ item.title }}</span>
+                        <i class="bi {{ item.icon_class }} text-muted"></i>
+                    </a>
+                    {% empty %}
+                    <div class="text-center text-muted small py-3">لا توجد عناصر</div>
+                    {% endfor %}
+                </nav>
+            </aside>
+
+            <!-- Center Content: Dashboard (8 cols) -->
+            <main class="col-lg-8 order-lg-2">
+                {% block content %}
+                {% endblock %}
+            </main>
+
+            <!-- Left Sidebar: AI Alerts (2 cols) -->
+            <aside class="col-lg-2 order-lg-3">
+                <h2 class="fw-bold fs-5 mb-3">{{ dashboard_settings.ai_alerts_title }}</h2>
+                <div class="d-flex flex-column gap-3">
+                    {% block alerts %}
+                    <!-- Alerts will be injected here -->
+                    {% endblock %}
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
