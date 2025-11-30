@@ -60,20 +60,20 @@
                             </div>
                             <div class="progress" style="height: 8px;">
                                 {% if province.completed_pct > 0 %}
-                                <div class="progress-bar bg-success" role="progressbar"
-                                    style="width: {{ province.completed_pct }}%" title="مكتمل"></div>
+                                <div class="progress-bar" role="progressbar"
+                                    style="width: {{ province.completed_pct }}%; background-color: #10B981;" title="مكتمل"></div>
                                 {% endif %}
                                 {% if province.in_progress_pct > 0 %}
-                                <div class="progress-bar bg-warning" role="progressbar"
-                                    style="width: {{ province.in_progress_pct }}%" title="قيد التنفيذ"></div>
+                                <div class="progress-bar" role="progressbar"
+                                    style="width: {{ province.in_progress_pct }}%; background-color: #F59E0B;" title="قيد التنفيذ"></div>
                                 {% endif %}
                                 {% if province.delayed_pct > 0 %}
-                                <div class="progress-bar bg-danger" role="progressbar"
-                                    style="width: {{ province.delayed_pct }}%" title="متعثر"></div>
+                                <div class="progress-bar" role="progressbar"
+                                    style="width: {{ province.delayed_pct }}%; background-color: #EF4444;" title="متعثر"></div>
                                 {% endif %}
                                 {% if province.planned_pct > 0 %}
-                                <div class="progress-bar bg-primary" role="progressbar"
-                                    style="width: {{ province.planned_pct }}%" title="مخطط"></div>
+                                <div class="progress-bar" role="progressbar"
+                                    style="width: {{ province.planned_pct }}%; background-color: #3B82F6;" title="مخطط"></div>
                                 {% endif %}
                             </div>
                         </div>

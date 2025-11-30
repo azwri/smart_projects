@@ -19,6 +19,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (project.status === 'delayed') color = '#EF4444'; // Red
             if (project.status === 'in_progress') color = '#F59E0B'; // Yellow
 
+            let popupContent = `<b>${project.name}</b><br>${project.province__name}<br>Status: ${project.status}`;
+            if (project.video) {
+                popupContent += `<br><video width="200" controls class="mt-2 rounded"><source src="${project.video}" type="video/mp4">Your browser does not support the video tag.</video>`;
+            }
+            
             L.circleMarker([project.latitude, project.longitude], {
                 radius: 8,
                 fillColor: color,
@@ -27,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 opacity: 1,
                 fillOpacity: 0.8
             }).addTo(map)
-                .bindPopup(`<b>${project.name}</b><br>${project.province__name}<br>Status: ${project.status}`);
+                .bindPopup(popupContent);
         });
     }
 

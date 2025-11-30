@@ -56,6 +56,7 @@ class Project(models.Model):
         ('delayed', 'Delayed'),
         ('planned', 'Planned')
     ], default='planned', verbose_name="Status")
+    video = models.CharField(max_length=200, blank=True, null=True, verbose_name="Project Video", help_text="Path to video file (e.g., /static/core/video.mp4)")
 
     def __str__(self):
         return self.name

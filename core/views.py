@@ -19,7 +19,8 @@ def index(request):
             'latitude': p.latitude,
             'longitude': p.longitude,
             'status': p.status,
-            'province__name': p.province.name
+            'province__name': p.province.name,
+            'video': p.video
         })
 
     # 4. Charts Data
