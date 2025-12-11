@@ -61,19 +61,23 @@
                             <div class="progress" style="height: 8px;">
                                 {% if province.completed_pct > 0 %}
                                 <div class="progress-bar" role="progressbar"
-                                    style="width: {{ province.completed_pct }}%; background-color: #10B981;" title="مكتمل"></div>
+                                    style="width: {{ province.completed_pct }}%; background-color: #10B981;"
+                                    title="مكتمل"></div>
                                 {% endif %}
                                 {% if province.in_progress_pct > 0 %}
                                 <div class="progress-bar" role="progressbar"
-                                    style="width: {{ province.in_progress_pct }}%; background-color: #F59E0B;" title="قيد التنفيذ"></div>
+                                    style="width: {{ province.in_progress_pct }}%; background-color: #F59E0B;"
+                                    title="قيد التنفيذ"></div>
                                 {% endif %}
                                 {% if province.delayed_pct > 0 %}
                                 <div class="progress-bar" role="progressbar"
-                                    style="width: {{ province.delayed_pct }}%; background-color: #EF4444;" title="متعثر"></div>
+                                    style="width: {{ province.delayed_pct }}%; background-color: #EF4444;"
+                                    title="متعثر"></div>
                                 {% endif %}
                                 {% if province.planned_pct > 0 %}
                                 <div class="progress-bar" role="progressbar"
-                                    style="width: {{ province.planned_pct }}%; background-color: #3B82F6;" title="مخطط"></div>
+                                    style="width: {{ province.planned_pct }}%; background-color: #3B82F6;" title="مخطط">
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
@@ -121,14 +125,45 @@
             </div>
         </div>
     </div>
-    {% endblock %}
+</div>
 
-    {% block scripts %}
-    <script>
-        const projectsData = {{ projects_json| safe }};
-        const lineChartData = {{ line_chart_json| safe }};
-        const barChartData = {{ bar_chart_json| safe }};
-        const donutChartData = {{ donut_chart_json| safe }};
-    </script>
-    <script src="{% static 'core/js/dashboard.js' %}"></script>
-    {% endblock %}
+<!-- Video Modal -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="videoModalLabel">Project Video</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-0 bg-black position-relative"
+                style="min-height: 400px; display: flex; align-items: center; justify-content: center;">
+
+                <!-- Static Video Player -->
+                <video id="modal-video-player" controls class="w-100 h-100 d-none" style="max-height: 80vh;">
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+
+                <!-- Live Stream Container -->
+                <div id="modal-live-container"
+                    class="w-100 h-100 d-none flex-column align-items-center justify-content-center">
+                    <video id="modal-live-video" autoplay playsinline class="w-100" style="max-height: 80vh;"></video>
+                    <div id="modal-live-status" class="mt-3 text-info">Connecting...</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const projectsData = {{ projects_json| safe }};
+    const lineChartData = {{ line_chart_json| safe }};
+    const barChartData = {{ bar_chart_json| safe }};
+    const donutChartData = {{ donut_chart_json| safe }};
+</script>
+<script src="{% static 'core/js/dashboard.js' %}"></script>
+{% endblock %}

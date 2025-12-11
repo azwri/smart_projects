@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <title>بث مباشر</title>
+</head>
+
+<body style="margin:0; background:#000; display:flex; justify-content:center; align-items:center; height:100vh;">
+    <video id="camera" autoplay playsinline style="width:100%; height:auto;"></video>
+    <div id="status"
+        style="position: absolute; top: 20px; left: 20px; color: white; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; font-family: sans-serif;">
+        Status: <span id="status-text">Initializing...</span>
+    </div>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script>
+        // Sender: Live Page
+        const statusText = document.getElementById('status-text');
+        const peer = new Peer('absher-fog-walkway', {
+            debug: 2,
+            config: {
+                'iceServers': [
+                    { url: 'stun:stun.l.google.com:19302' },
+                    { url: 'stun:stun1.l.google.com:19302' }
+                ]
+            }
+        });
+
+        peer.on('open', id => {
+            console.log('My peer ID is: ' + id);
+            statusText.innerText = "Online (ID: " + id + ")";
+            statusText.style.color = "#0f0";
+        });
+
+        peer.on('error', err => {
+            console.error('Peer error:', err);
+            statusText.innerText = "Error: " + err.type;
+            statusText.style.color = "#f00";
+        });
+
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                const video = document.getElementById("camera");
+                video.srcObject = stream;
+
+                // Handle incoming data connections (Reverse Call Requests)
+                peer.on('connection', (conn) => {
+                    console.log('Data connection established');
+                    conn.on('data', (data) => {
+                        console.log('Received data:', data);
+                        if (data === 'call-me') {
+                            statusText.innerText = "Streaming to viewer...";
+                            console.log('Calling viewer back at:', conn.peer);
+                            // Call the viewer
+                            const call = peer.call(conn.peer, stream);
+                            call.on('close', () => {
+                                statusText.innerText = "Online (ID: " + peer.id + ")";
+                            });
+                        }
+                    });
+                });
+            })
+            .catch(err => {
+                console.error("camera error:", err);
+                statusText.innerText = "Camera Error";
+            });
+
+        // Cleanup on close
+        window.addEventListener('beforeunload', () => {
+            peer.destroy();
+        });
+    </script>
+</body>
+
+</html>

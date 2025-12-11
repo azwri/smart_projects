@@ -98,3 +98,6 @@ def index(request):
         'dashboard_settings': dashboard_settings,
     }
     return render(request, 'core/index.html', context)
+
+def live(request):
+    return render(request, 'core/live.html')

@@ -14,6 +14,9 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    <!-- PeerJS -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
     <!-- Google Fonts: Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,14 +78,19 @@
 <body class="d-flex flex-column min-vh-100 text-body">
 
     <!-- Top Header -->
-    <header class="bg-white shadow-sm py-3 px-4 d-flex justify-content-between align-items-center sticky-top z-3">
-        <!-- Right: Logo & Title -->
+    <header
+        class="bg-white shadow-sm py-3 px-4 d-flex justify-content-between align-items-center sticky-top z-3 position-relative">
+        <!-- Right: Logo & Menu Toggle -->
         <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-light d-lg-none" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                <i class="bi bi-list fs-4"></i>
+            </button>
             <img src="{% static 'core/logo.png' %}" alt="Smart Projects Logo" style="height: 60px;">
         </div>
 
-        <!-- Center: Search -->
-        <div class="flex-grow-1 mx-4" style="max-width: 500px;">
+        <!-- Center: Search (Hidden on small mobile if needed, or kept) -->
+        <div class="flex-grow-1 mx-4 d-none d-md-block" style="max-width: 500px;">
             <div class="position-relative">
                 <input type="text" placeholder="البحث"
                     class="form-control rounded-pill px-4 py-2 bg-light border-0 focus-ring focus-ring-light">
@@ -92,16 +100,23 @@
             </div>
         </div>
 
-        <!-- Left: Icons -->
+        <!-- Left: Icons & Alerts Toggle -->
         <div class="d-flex align-items-center gap-3 text-secondary">
-            <button class="btn btn-light rounded-circle p-2 border-0">
-                <i class="bi bi-bell fs-5"></i>
-            </button>
-            <button class="btn btn-light rounded-circle p-2 border-0">
-                <i class="bi bi-gear fs-5"></i>
-            </button>
-            <button class="btn btn-light rounded-circle p-2 border-0">
-                <i class="bi bi-person fs-5"></i>
+            <div class="d-none d-sm-flex align-items-center gap-3">
+                <button class="btn btn-light rounded-circle p-2 border-0">
+                    <i class="bi bi-bell fs-5"></i>
+                </button>
+                <button class="btn btn-light rounded-circle p-2 border-0">
+                    <i class="bi bi-gear fs-5"></i>
+                </button>
+                <button class="btn btn-light rounded-circle p-2 border-0">
+                    <i class="bi bi-person fs-5"></i>
+                </button>
+            </div>
+            <!-- Mobile Alert Toggle -->
+            <button class="btn btn-light d-lg-none" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft">
+                <i class="bi bi-bell-fill fs-5 text-primary"></i>
             </button>
         </div>
     </header>
@@ -111,19 +126,27 @@
         <div class="row g-4">
 
             <!-- Right Sidebar: Navigation (2 cols) -->
-            <aside class="col-lg-2 order-lg-1">
-                <h2 class="fw-bold fs-5 mb-3 text-end">القائمة الرئيسية:</h2>
-                <nav class="list-group list-group-flush bg-transparent gap-2">
-                    {% for item in nav_items %}
-                    <a href="{{ item.url }}"
-                        class="list-group-item list-group-item-action bg-light border-0 rounded d-flex justify-content-between align-items-center p-3">
-                        <span class="fw-medium">{{ item.title }}</span>
-                        <i class="bi {{ item.icon_class }} text-muted"></i>
-                    </a>
-                    {% empty %}
-                    <div class="text-center text-muted small py-3">لا توجد عناصر</div>
-                    {% endfor %}
-                </nav>
+            <aside class="col-lg-2 order-lg-1 offcanvas-lg offcanvas-end" tabindex="-1" id="offcanvasRight"
+                aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasRightLabel">القائمة الرئيسية</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasRight"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body d-flex flex-column">
+                    <h2 class="fw-bold fs-5 mb-3 text-end d-none d-lg-block">القائمة الرئيسية:</h2>
+                    <nav class="list-group list-group-flush bg-transparent gap-2 w-100">
+                        {% for item in nav_items %}
+                        <a href="{{ item.url }}"
+                            class="list-group-item list-group-item-action bg-light border-0 rounded d-flex justify-content-between align-items-center p-3">
+                            <span class="fw-medium">{{ item.title }}</span>
+                            <i class="bi {{ item.icon_class }} text-muted"></i>
+                        </a>
+                        {% empty %}
+                        <div class="text-center text-muted small py-3">لا توجد عناصر</div>
+                        {% endfor %}
+                    </nav>
+                </div>
             </aside>
 
             <!-- Center Content: Dashboard (8 cols) -->
@@ -133,12 +156,20 @@
             </main>
 
             <!-- Left Sidebar: AI Alerts (2 cols) -->
-            <aside class="col-lg-2 order-lg-3">
-                <h2 class="fw-bold fs-5 mb-3">{{ dashboard_settings.ai_alerts_title }}</h2>
-                <div class="d-flex flex-column gap-3">
-                    {% block alerts %}
-                    <!-- Alerts will be injected here -->
-                    {% endblock %}
+            <aside class="col-lg-2 order-lg-3 offcanvas-lg offcanvas-start" tabindex="-1" id="offcanvasLeft"
+                aria-labelledby="offcanvasLeftLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasLeftLabel">{{ dashboard_settings.ai_alerts_title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasLeft"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body d-flex flex-column">
+                    <h2 class="fw-bold fs-5 mb-3 d-none d-lg-block">{{ dashboard_settings.ai_alerts_title }}</h2>
+                    <div class="d-flex flex-column gap-3 w-100">
+                        {% block alerts %}
+                        <!-- Alerts will be injected here -->
+                        {% endblock %}
+                    </div>
                 </div>
             </aside>
 
